@@ -37,7 +37,7 @@ export default fp((server, opts, next) => {
         }
     });
 
-    server.get("/shirt/model/get", { schema: ShirtIdTO }, (request, reply) => {
+    server.post("/shirt/model/get", { schema: ShirtIdTO }, (request, reply) => {
         try {
             const { ShirtId } = request.body;
             const shirtDb = ShirtFactory(server.db);
