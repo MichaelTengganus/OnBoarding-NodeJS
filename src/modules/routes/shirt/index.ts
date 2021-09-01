@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
 
-import { GetShirtTO, ShirtTO, ShirtIdTO,  } from './schema';
+import { GetShirtTO, ShirtTO, ShirtIdTO, ShirtParam, } from './schema';
 import { ShirtFactory } from '../../../plugins/db/models/shirt';
 
 
@@ -37,6 +37,44 @@ export default fp((server, opts, next) => {
         }
     });
 
+    /**
+     * @swagger
+     * path: "/shirt/model/{ShirtId}"
+     * description: ShirtDetail
+     * tags: Shirt
+     * summary: Shirt
+     * params:
+     *      type: object
+     *      properties:
+     *          id:
+     *              type: string
+     *              format: uuid
+     *              description: ShirtId
+     */
+    server.get("/shirt/model/:ShirtId", { schema: ShirtParam }, (request, reply) => {
+        try {
+            const ShirtId = request.params.ShirtId
+            const shirtDb = ShirtFactory(server.db);
+            shirtDb.findAll({
+                where: { ShirtId: ShirtId }
+            }).then(data => {
+                return reply.code(200).send({
+                    success: true,
+                    message: 'Get ' + ShirtId + ' successful!',
+                    data
+                });
+            }).catch(err => {
+                return reply.code(400).send({
+                    success: false,
+                    message: 'Error in getting new record',
+                    data: err,
+                });
+            });
+        } catch (error) {
+            request.log.error(error);
+            return reply.send(400);
+        }
+    });
     server.post("/shirt/model/get", { schema: ShirtIdTO }, (request, reply) => {
         try {
             const { ShirtId } = request.body;

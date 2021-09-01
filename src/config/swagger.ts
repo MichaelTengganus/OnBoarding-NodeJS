@@ -26,7 +26,7 @@ const options: SwaggerOptions = {
         ]
     },
     hideUntagged: true,
-    exposeRoute: true
+    exposeRoute: true,
 };
 
 export default {
