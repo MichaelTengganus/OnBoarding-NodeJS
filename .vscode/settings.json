@@ -1,0 +1,9 @@
+{
+    "cSpell.words": [
+        "fastify",
+        "sequalize",
+        "UUIDV"
+    ],
+    "tslint.alwaysShowRuleFailuresAsWarnings": true,
+    "tslint.alwaysShowStatus": true
+}

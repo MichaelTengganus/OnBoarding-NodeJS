@@ -30,27 +30,19 @@ export default fp((server, opts, next) => {
                         err,
                     });
                 });
-
         } catch (error) {
+            server.apm.captureError({
+                method: request.routerMethod,
+                path: request.routerPath,
+                param: request.body,
+                error
+            })
+
             request.log.error(error);
             return reply.send(400);
         }
     });
 
-    /**
-     * @swagger
-     * path: "/shirt/model/{ShirtId}"
-     * description: ShirtDetail
-     * tags: Shirt
-     * summary: Shirt
-     * params:
-     *      type: object
-     *      properties:
-     *          id:
-     *              type: string
-     *              format: uuid
-     *              description: ShirtId
-     */
     server.get("/shirt/model/:ShirtId", { schema: ShirtParam }, (request, reply) => {
         try {
             const ShirtId = request.params.ShirtId
@@ -64,6 +56,13 @@ export default fp((server, opts, next) => {
                     data
                 });
             }).catch(err => {
+                server.apm.captureError({
+                    method: request.routerMethod,
+                    path: request.routerPath,
+                    param: request.body,
+                    error: err,
+                })
+
                 return reply.code(400).send({
                     success: false,
                     message: 'Error in getting new record',
@@ -71,6 +70,13 @@ export default fp((server, opts, next) => {
                 });
             });
         } catch (error) {
+            server.apm.captureError({
+                method: request.routerMethod,
+                path: request.routerPath,
+                param: request.body,
+                error
+            })
+
             request.log.error(error);
             return reply.send(400);
         }
@@ -88,6 +94,13 @@ export default fp((server, opts, next) => {
                     data
                 });
             }).catch(err => {
+                server.apm.captureError({
+                    method: request.routerMethod,
+                    path: request.routerPath,
+                    param: request.body,
+                    error: err,
+                })
+
                 return reply.code(400).send({
                     success: false,
                     message: 'Error in getting new record',
@@ -95,6 +108,13 @@ export default fp((server, opts, next) => {
                 });
             });
         } catch (error) {
+            server.apm.captureError({
+                method: request.routerMethod,
+                path: request.routerPath,
+                param: request.body,
+                error
+            })
+
             request.log.error(error);
             return reply.send(400);
         }
@@ -120,6 +140,13 @@ export default fp((server, opts, next) => {
                         }
                     });
                 }).catch(err => {
+                    server.apm.captureError({
+                        method: request.routerMethod,
+                        path: request.routerPath,
+                        param: request.body,
+                        error: err,
+                    })
+
                     return reply.code(400).send({
                         success: false,
                         message: 'Error in insert new record',
@@ -127,6 +154,13 @@ export default fp((server, opts, next) => {
                     });
                 });
         } catch (error) {
+            server.apm.captureError({
+                method: request.routerMethod,
+                path: request.routerPath,
+                param: request.body,
+                error
+            })
+
             request.log.error(error);
             return reply.send(400);
         }
@@ -141,12 +175,30 @@ export default fp((server, opts, next) => {
                 {
                     where: { ShirtId: ShirtId }
                 }).then(data => {
-                    return reply.code(200).send({
-                        success: true,
-                        message: 'Update ' + ShirtId + ' successful!',
-                        data
-                    });
+                    if (data[0] == 0) {
+                        const msg = "Data " + ShirtId + "not found";
+                        server.apm.captureError({
+                            method: request.routerMethod,
+                            path: request.routerPath,
+                            param: request.body,
+                            error: msg,
+                        })
+                        return reply.send(400);
+                    } else {
+                        return reply.code(200).send({
+                            success: true,
+                            message: 'Update ' + ShirtId + ' successful!',
+                            data
+                        });
+                    }
                 }).catch(err => {
+                    server.apm.captureError({
+                        method: request.routerMethod,
+                        path: request.routerPath,
+                        param: request.body,
+                        error: err,
+                    })
+
                     return reply.code(400).send({
                         success: false,
                         message: 'Error in updating new record',
@@ -154,6 +206,13 @@ export default fp((server, opts, next) => {
                     });
                 });
         } catch (error) {
+            server.apm.captureError({
+                method: request.routerMethod,
+                path: request.routerPath,
+                param: request.body,
+                error
+            })
+
             request.log.error(error);
             return reply.send(400);
         }
@@ -172,6 +231,13 @@ export default fp((server, opts, next) => {
                     data
                 });
             }).catch(err => {
+                server.apm.captureError({
+                    method: request.routerMethod,
+                    path: request.routerPath,
+                    param: request.body,
+                    error: err,
+                })
+
                 return reply.code(400).send({
                     success: false,
                     message: 'Error in deleting new record',
@@ -179,6 +245,13 @@ export default fp((server, opts, next) => {
                 });
             });
         } catch (error) {
+            server.apm.captureError({
+                method: request.routerMethod,
+                path: request.routerPath,
+                param: request.body,
+                error
+            })
+
             request.log.error(error);
             return reply.send(400);
         }
