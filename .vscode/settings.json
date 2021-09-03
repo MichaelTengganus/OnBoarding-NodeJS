@@ -4,6 +4,6 @@
         "sequalize",
         "UUIDV"
     ],
-    "tslint.alwaysShowRuleFailuresAsWarnings": true,
+    "tslint.alwaysShowRuleFailuresAsWarnings": false,
     "tslint.alwaysShowStatus": true
 }

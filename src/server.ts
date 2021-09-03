@@ -10,6 +10,11 @@ import dbPlugin from './plugins/db';
 import kafkaPlugin from './plugins/kafka';
 import apmServer from 'elastic-apm-node';
 
+import fastifyJwt from "fastify-jwt";
+import fastifyAuth from "fastify-auth";
+
+import redisPlugin from './plugins/redis';
+
 dotenv.config({
     path: path.resolve('.env'),
 });
@@ -26,11 +31,18 @@ const dbPassword: string = process.env.DB_PASSWORD;
 const apmUrl: string = process.env.APM_URL
 const kafkaHost: string = process.env.KAFKA_HOST;
 
+const secretKey: string = process.env.SECRET;
+const expireToken = process.env.EXPIRE_TOKEN;
+
+const redistHost: string = process.env.REDIS_HOST;
+const redisPort: any = process.env.REDIS_PORT;
+const redisPassword: string = process.env.REDIS_PASSWORD;
+
 // set APM service
 var apm = apmServer.start({
     serviceName: 'apm-server',
     serverUrl: apmUrl,
-    environment:'development',
+    environment: 'development',
 })
 
 export const createServer = () => new Promise((resolve, reject) => {
@@ -52,6 +64,8 @@ export const createServer = () => new Promise((resolve, reject) => {
 
     // swagger / open api
     server.register(fastifySwagger, swagger.options);
+    server.register(fastifyJwt, { secret: secretKey })
+    server.register(fastifyAuth)
 
     // auto register all routes
     server.register(AutoLoad, {
@@ -60,12 +74,16 @@ export const createServer = () => new Promise((resolve, reject) => {
 
     //-----------------------------------------------------
     // decorators
-    server.decorate('conf', { port, dbDialect, db, dbHost, dbPort, dbUsername, dbPassword, kafkaHost, apmUrl });
+    server.decorate('conf', {
+        port, dbDialect, db, dbHost, dbPort, dbUsername, dbPassword, kafkaHost, apmUrl,
+        secretKey, expireToken, redistHost, redisPort, redisPassword
+    });
     server.decorate('apm', apmServer);
 
     // plugin
     server.register(dbPlugin);
     server.register(kafkaPlugin);
+    server.register(redisPlugin);
 
     // add request onRequest
     server.addHook('onRequest', async (request, reply, error) => {

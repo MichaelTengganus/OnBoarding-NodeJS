@@ -1,8 +1,9 @@
 import fp from 'fastify-plugin'
 import * as dbSequel from "sequelize";
-import { ShirtFactory } from './models/shirt';
+// import { ShirtFactory } from './models/shirt';
+// import { UserFactory } from './models/user';
 
-const dbPlugin = (async (server, opts, next) => {
+const dbPlugin = (async (server/*, opts, next*/) => {
 
     // database
     const dbSequelize = new dbSequel.Sequelize(server.conf.db, server.conf.dbUsername, server.conf.dbPassword, {
@@ -29,8 +30,7 @@ const dbPlugin = (async (server, opts, next) => {
             .then(() => done())
             .catch((error) => {
                 const { message, stack } = error;
-                let err = {
-
+                const err = {
                     method: 'DB Connection Closing',
                     message,
                     stack
@@ -57,6 +57,7 @@ const dbPlugin = (async (server, opts, next) => {
         });
 
     // const shirt = ShirtFactory(dbSequelize)
+    // export const User = UserFactory(dbSequelize);
 
     server.db.sync();
 

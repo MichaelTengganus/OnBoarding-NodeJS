@@ -13,7 +13,7 @@ export default fp((server, opts, next) => {
     server.post("/kafka/subscribe", { schema: SubscribeKafkaTO }, (request, reply) => {
         try {
             const { topic } = request.body;
-            let count: number = 0;
+            let count = 0;
             let data = [];
 
             kafkaSubscribe(server.kafkaClient, topic, (messages) => {
@@ -28,6 +28,7 @@ export default fp((server, opts, next) => {
                     });
                 }
             });
+            data = [];
 
         } catch (error) {
             server.apm.captureError({
