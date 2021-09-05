@@ -20,6 +20,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "crypto-js": "^4.1.1",
         "dotenv": "^10.0.0",
         "elastic-apm-node": "^3.20.0",
         "fastify": "^3.20.2",

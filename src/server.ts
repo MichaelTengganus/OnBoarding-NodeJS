@@ -40,7 +40,7 @@ const redisPassword: string = process.env.REDIS_PASSWORD;
 
 // set APM service
 var apm = apmServer.start({
-    serviceName: 'apm-server',
+    serviceName: 'apm-server-mike',
     serverUrl: apmUrl,
     environment: 'development',
 })

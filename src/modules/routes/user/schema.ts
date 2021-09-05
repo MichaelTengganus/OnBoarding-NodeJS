@@ -19,7 +19,68 @@ export const UserTO = {
                 data: {
                     username: { type: 'string' },
                     password: { type: 'string' },
-                    createdBy: { type: 'string' },
+                }
+            }
+        }
+    }
+};
+
+export const UpdateUserTO = {
+    description: 'UserDetail',
+    tags: ['User'],
+    summary: 'User',
+    body: {
+        type: 'object',
+        properties: {
+            token: { type: 'string' },
+            username: { type: 'string' },
+            oldPassword: { type: 'string' },
+            newPassword: { type: 'string' },
+        }
+    },
+    // bearerAuth: {
+    //     type: 'http',
+    //     scheme: 'bearer',
+    //     bearerFormat: 'JWT'
+    // },
+    response: {
+        200: {
+            description: 'Successful response',
+            type: 'object',
+            properties: {
+                success: { type: 'string' },
+                message: { type: 'string' },
+                data: {
+                    username: { type: 'string' },
+                    password: { type: 'string' },
+                }
+            }
+        }
+    }
+};
+
+export const DeleteUserTO = {
+    description: 'UserDetail',
+    tags: ['User'],
+    summary: 'User',
+    body: {
+        type: 'object',
+        properties: {
+            token: { type: 'string' },
+            username: { type: 'string' },
+            password: { type: 'string' }
+        }
+    },
+    response: {
+        200: {
+            description: 'Successful response',
+            type: 'object',
+            properties: {
+                success: { type: 'string' },
+                message: { type: 'string' },
+                data: {
+                    username: { type: 'string' },
+                    password: { type: 'string' },
                 }
             }
         }
