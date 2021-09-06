@@ -124,7 +124,7 @@ export class UserService {
                     })
                 }
             }).catch(error => {
-                reject(Error("Error in update record"))
+                reject(Error("Error in delete record"))
             });
 
         } catch (error) {

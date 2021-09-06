@@ -14,6 +14,7 @@ import fastifyJwt from "fastify-jwt";
 import fastifyAuth from "fastify-auth";
 
 import redisPlugin from './plugins/redis';
+import fastifySchedule from "fastify-schedule";
 
 dotenv.config({
     path: path.resolve('.env'),
@@ -66,6 +67,7 @@ export const createServer = () => new Promise((resolve, reject) => {
     server.register(fastifySwagger, swagger.options);
     server.register(fastifyJwt, { secret: secretKey })
     server.register(fastifyAuth)
+    server.register(fastifySchedule);
 
     // auto register all routes
     server.register(AutoLoad, {

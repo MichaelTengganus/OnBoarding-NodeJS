@@ -33,31 +33,45 @@ describe('/userModel', () => {
     // Spying on the actual methods of the class
     jest.spyOn(userService, 'getAllUser');
     jest.spyOn(userService, 'insertUser');
+    jest.spyOn(userService, 'deleteUser');
+    jest.spyOn(userService, 'validateUsernamePassword');
     // jest.spyOn(authService, 'verify');
 
     it('should insert user success', async () => {
-        await userService.insertUser(dataInsertSuccess)
+        const insertUser = await userService.insertUser(dataInsertSuccess)
             .then(data => {
                 expect(JSON.stringify(data)).toContain('"username":"jestUsername"')
             })
+        expect(userService.validateUsernamePassword).toHaveBeenCalledTimes(1);
         expect(userService.insertUser).toHaveBeenCalledTimes(1);
     });
 
     it('should insert user failed', async () => {
-        await userService.insertUser(dataInsertFailed)
+        const insertUser = await userService.insertUser(dataInsertFailed)
             .catch(error => {
                 expect(error).toEqual(Error("Username cannot be empty. Password cannot be empty. "))
             })
+        expect(userService.validateUsernamePassword).toHaveBeenCalledTimes(2);
         expect(userService.insertUser).toHaveBeenCalledTimes(2);
     });
 
     it('should get user', async () => {
         const getAllUser = await userService.getAllUser()
-            // .then(data => {
-            //     expect(JSON.stringify(data)).toContain('"username":"jestUsername"')
-            // });
+        // .then(data => {
+        //     expect(JSON.stringify(data)).toContain('"username":"jestUsername"')
+        // });
         expect(getAllUser).toBeTruthy()
         expect(userService.getAllUser).toBeCalledTimes(1)
+    });
+
+    // expect error kara gak bisa mock data user awal
+    it('should delete user', async () => {
+        const deleteUser = await userService.deleteUser(dataInsertSuccess)
+            .catch(error => {
+                expect(error).toEqual(Error("Error in delete record"))
+            })
+        expect(userService.validateUsernamePassword).toHaveBeenCalledTimes(3);
+        expect(userService.deleteUser).toBeCalledTimes(1)
     });
 
     // it('should verify user', async () => {
