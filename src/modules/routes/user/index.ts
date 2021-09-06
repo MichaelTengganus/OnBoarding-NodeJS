@@ -2,8 +2,8 @@ import fp from 'fastify-plugin';
 
 import { UserTO, GetUserTO, UpdateUserTO, DeleteUserTO, LoginTO, VerifyTokenTO } from './schema';
 
-import { insert, update, destroy, getAll } from '../../services/user-service'
-import { login, verify } from '../../services/auth-service'
+import { UserService } from '../../services/user-service'
+import { AuthService } from '../../services/auth-service'
 
 import { sendApmError } from '../../../util/apmCaptureErr'
 
@@ -11,7 +11,8 @@ export default fp((server, opts, next) => {
 
     server.post("/auth/login", { schema: LoginTO }, async (request, reply) => {
         try {
-            await login(server, request.body)
+            const authService = new AuthService(server.db, server.redis, server.jwt, server.conf);
+            await authService.login(request.body)
                 .then(token => {
                     return reply.code(200).send({
                         success: true,
@@ -35,7 +36,10 @@ export default fp((server, opts, next) => {
 
     server.post("/auth/verify", { schema: VerifyTokenTO }, async (request, reply) => {
         try {
-            await verify(server, request.body)
+            const authService = new AuthService(server.db, server.redis, server.jwt, server.conf);
+            const token = request.headers.authorization;
+
+            await authService.verify(token)
                 .then(data => {
                     return reply.code(200).send({
                         payload: data
@@ -59,7 +63,8 @@ export default fp((server, opts, next) => {
 
     server.get("/user/model/getAll", { schema: GetUserTO }, async (request, reply) => {
         try {
-            await getAll(server)
+            const userService = new UserService(server.db, server.redis);
+            await userService.getAllUser()
                 .then(data => {
                     return reply.code(200).send({
                         success: true,
@@ -82,7 +87,8 @@ export default fp((server, opts, next) => {
 
     server.post("/user/model/insert", { schema: UserTO }, async (request, reply) => {
         try {
-            await insert(server, request.body)
+            const userService = new UserService(server.db, server.redis);
+            await userService.insertUser(request.body)
                 .then((data) => {
                     return reply.code(200).send({
                         success: true,
@@ -105,10 +111,13 @@ export default fp((server, opts, next) => {
 
     server.put("/user/model/update", { schema: UpdateUserTO }, async (request, reply) => {
         try {
-            //versi await in await work
-            await verify(server, request.body)
+            const userService = new UserService(server.db, server.redis);
+            const authService = new AuthService(server.db, server.redis, server.jwt, server.conf);
+            const token = request.headers.authorization;
+
+            await authService.verify(token)
                 .then(async (data) => {
-                    await update(server, request.body)
+                    await userService.updateUser(request.body)
                         .then((data) => {
                             return reply.code(200).send({
                                 success: true,
@@ -127,32 +136,6 @@ export default fp((server, opts, next) => {
 
                     return reply.code(400).send({ success: false, message: error.message, error })
                 })
-
-            //versi await - await
-            //udah di return pas error verify tapi kok masih lanjut
-            //padahal flow serial
-            /*
-            await verify(server, request.body)
-                .then((data) => { })
-                .catch(error => {
-                    sendApmError(server, request, error);
-
-                    return reply.code(400).send({ success: false, message: error.message, error })
-                })
-            await update(server, request.body)
-                .then((data) => {
-                    return reply.code(200).send({
-                        success: true,
-                        message: "Update successful",
-                        data
-                    });
-                })
-                .catch(error => {
-                    sendApmError(server, request, error);
-
-                    return reply.code(400).send({ success: false, message: error.message, error })
-                })
-            */
         } catch (error) {
             sendApmError(server, request, error);
 
@@ -163,9 +146,13 @@ export default fp((server, opts, next) => {
 
     server.delete("/user/model/delete", { schema: DeleteUserTO }, async (request, reply) => {
         try {
-            await verify(server, request.body)
+            const userService = new UserService(server.db, server.redis);
+            const authService = new AuthService(server.db, server.redis, server.jwt, server.conf);
+            const token = request.headers.authorization;
+
+            await authService.verify(token)
                 .then(async (data) => {
-                    await destroy(server, request.body)
+                    await userService.deleteUser(request.body)
                         .then((data) => {
                             return reply.code(200).send({
                                 success: true,

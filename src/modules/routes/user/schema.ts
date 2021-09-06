@@ -32,17 +32,11 @@ export const UpdateUserTO = {
     body: {
         type: 'object',
         properties: {
-            token: { type: 'string' },
             username: { type: 'string' },
             oldPassword: { type: 'string' },
             newPassword: { type: 'string' },
         }
     },
-    // bearerAuth: {
-    //     type: 'http',
-    //     scheme: 'bearer',
-    //     bearerFormat: 'JWT'
-    // },
     response: {
         200: {
             description: 'Successful response',
@@ -66,7 +60,6 @@ export const DeleteUserTO = {
     body: {
         type: 'object',
         properties: {
-            token: { type: 'string' },
             username: { type: 'string' },
             password: { type: 'string' }
         }
@@ -101,7 +94,6 @@ export const GetUserTO = {
                 data: {
                     username: { type: 'string' },
                     password: { type: 'string' },
-                    createdBy: { type: 'string' },
                 }
             }
         }
@@ -134,12 +126,10 @@ export const VerifyTokenTO = {
     description: 'verifyToken',
     tags: ['auth'],
     summary: 'Verify Token',
-    body: {
-        type: 'object',
-        properties: {
-            token: { type: 'string' },
-        }
-    },
+    // body: {
+    //     type: 'object',
+    //     properties: {}
+    // },
     response: {
         200: {
             description: 'Successful response',
