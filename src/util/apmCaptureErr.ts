@@ -7,5 +7,5 @@ export const sendApmError = (server, request, error) => {
         message,
         stack
     }
-    server.apm.captureError(err)
+    // server.apm.captureError(err)
 }

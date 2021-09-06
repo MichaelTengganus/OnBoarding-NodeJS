@@ -20,6 +20,7 @@ const dbPlugin = (async (server/*, opts, next*/) => {
             acquire: 30000,
             idle: 10000
         },
+        logging: false
     });
 
     // decorators

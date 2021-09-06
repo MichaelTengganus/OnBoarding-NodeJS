@@ -83,23 +83,19 @@ export class AuthService {
                 reject(Error(errMessage));
             }
 
-            if (token) {
-                this.jwt.verify(token, (error, decoded) => {
-                    if (error) {
-                        reject(error)
-                    } else {
-                        this.redis.get(decoded.username, (err, val) => {
-                            if (val == null) {
-                                reject(Error("Token not valid."));
-                            } else {
-                                resolve("Authentication successful! Token is valid.");
-                            }
-                        })
-                    }
-                });
-            } else {
-                reject(Error('Verify failed! Please check the request'));
-            }
+            this.jwt.verify(token, (error, decoded) => {
+                if (error) {
+                    reject(error)
+                } else {
+                    this.redis.get(decoded.username, (err, val) => {
+                        if (val == null) {
+                            reject(Error("Token not valid."));
+                        } else {
+                            resolve("Authentication successful! Token is valid.");
+                        }
+                    })
+                }
+            });
         } catch (error) {
             reject(error);
         }
