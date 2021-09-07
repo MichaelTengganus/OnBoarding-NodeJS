@@ -12,20 +12,12 @@ export default fp((server, opts, next) => {
     server.post("/auth/login", { schema: LoginTO }, async (request, reply) => {
         try {
             const authService = new AuthService(server.db, server.redis, server.jwt, server.conf);
-            await authService.login(request.body)
-                .then(token => {
-                    return reply.code(200).send({
-                        success: true,
-                        message: 'Authentication successful!',
-                        token
-                    });
-                })
-                .catch(error => {
-                    console.log(error)
-                    sendApmError(server, request, error);
-
-                    return reply.code(400).send({ success: false, message: error.message, error });
-                })
+            const token = await authService.login(request.body)
+            return reply.code(200).send({
+                success: true,
+                message: 'Authentication successful!',
+                token
+            });
         } catch (error) {
             sendApmError(server, request, error);
 
@@ -39,17 +31,10 @@ export default fp((server, opts, next) => {
             const authService = new AuthService(server.db, server.redis, server.jwt, server.conf);
             const token = request.headers.authorization;
 
-            await authService.verify(token)
-                .then(data => {
-                    return reply.code(200).send({
-                        payload: data
-                    });
-                })
-                .catch(error => {
-                    sendApmError(server, request, error);
-
-                    return reply.code(400).send({ success: false, message: error.message, error });
-                })
+            const data = await authService.verify(token)
+            return reply.code(200).send({
+                payload: data
+            });
         } catch (error) {
             sendApmError(server, request, error);
 
@@ -64,48 +49,34 @@ export default fp((server, opts, next) => {
     server.get("/user/model/getAll", { schema: GetUserTO }, async (request, reply) => {
         try {
             const userService = new UserService(server.db, server.redis);
-            await userService.getAllUser()
-                .then(data => {
-                    return reply.code(200).send({
-                        success: true,
-                        message: 'Successful!',
-                        data
-                    })
-                })
-                .catch(error => {
-                    sendApmError(server, request, error);
-
-                    return reply.code(400).send({ success: false, message: error.message, error })
-                })
+            const data = await userService.getAllUser()
+            return reply.code(200).send({
+                success: true,
+                message: 'Successful!',
+                data
+            })
         } catch (error) {
             sendApmError(server, request, error);
 
             request.log.error(error);
-            return reply.send(400);
+            return reply.code(400).send({ success: false, message: error.message, error })
         }
     });
 
     server.post("/user/model/insert", { schema: UserTO }, async (request, reply) => {
         try {
             const userService = new UserService(server.db, server.redis);
-            await userService.insertUser(request.body)
-                .then((data) => {
-                    return reply.code(200).send({
-                        success: true,
-                        message: 'Insert successful!',
-                        data
-                    });
-                })
-                .catch(error => {
-                    sendApmError(server, request, error);
-
-                    return reply.code(400).send({ success: false, message: error.message, error })
-                })
+            const data = await userService.insertUser(request.body)
+            return reply.code(200).send({
+                success: true,
+                message: 'Insert successful!',
+                data
+            });
         } catch (error) {
             sendApmError(server, request, error);
 
             request.log.error(error);
-            return reply.send(400);
+            return reply.code(400).send({ success: false, message: error.message, error })
         }
     });
 
@@ -116,31 +87,18 @@ export default fp((server, opts, next) => {
             const token = request.headers.authorization;
 
             await authService.verify(token)
-                .then(async (data) => {
-                    await userService.updateUser(request.body)
-                        .then((data) => {
-                            return reply.code(200).send({
-                                success: true,
-                                message: "Update successful",
-                                data
-                            });
-                        })
-                        .catch(error => {
-                            sendApmError(server, request, error);
+            const data = await userService.updateUser(request.body)
 
-                            return reply.code(400).send({ success: false, message: error.message, error })
-                        })
-                })
-                .catch(error => {
-                    sendApmError(server, request, error);
-
-                    return reply.code(400).send({ success: false, message: error.message, error })
-                })
+            return reply.code(200).send({
+                success: true,
+                message: "Update successful",
+                data
+            });
         } catch (error) {
             sendApmError(server, request, error);
 
             request.log.error(error);
-            return reply.send(400);
+            return reply.code(400).send({ success: false, message: error.message, error })
         }
     });
 
@@ -151,31 +109,18 @@ export default fp((server, opts, next) => {
             const token = request.headers.authorization;
 
             await authService.verify(token)
-                .then(async (data) => {
-                    await userService.deleteUser(request.body)
-                        .then((data) => {
-                            return reply.code(200).send({
-                                success: true,
-                                message: "Deletee successful",
-                                data
-                            });
-                        })
-                        .catch(error => {
-                            sendApmError(server, request, error);
+            const data = await userService.deleteUser(request.body)
 
-                            return reply.code(400).send({ success: false, message: error.message, error })
-                        })
-                })
-                .catch(error => {
-                    sendApmError(server, request, error);
-
-                    return reply.code(400).send({ success: false, message: error.message, error })
-                })
+            return reply.code(200).send({
+                success: true,
+                message: "Delete successful",
+                data
+            });
         } catch (error) {
             sendApmError(server, request, error);
 
             request.log.error(error);
-            return reply.send(400);
+            return reply.code(400).send({ success: false, message: error.message, error })
         }
     });
 

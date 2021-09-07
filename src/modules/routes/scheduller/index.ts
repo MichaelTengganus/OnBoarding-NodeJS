@@ -22,6 +22,6 @@ export default fp(async (server, options) => {
         console.log('JobRunning1 - error', err);
     });
 
-    const job1 = new SimpleIntervalJob({ seconds: 15, }, taskDummy, 'jobDummyId1')
-    server.scheduler.addSimpleIntervalJob(job1);
+    // const job1 = new SimpleIntervalJob({ seconds: 15, }, taskDummy, 'jobDummyId1')
+    // server.scheduler.addSimpleIntervalJob(job1);
 });

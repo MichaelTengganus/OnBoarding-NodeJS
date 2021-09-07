@@ -1,7 +1,7 @@
 import * as instance from '../server';
 import SequelizeMock from 'sequelize-mock';
-import { UserService } from '../modules/services/user-service';
-import { AuthService } from '../modules/services/auth-service';
+import { UserService } from '../modules/services/userService';
+import { AuthService } from '../modules/services/authService';
 import fastifyJwt from "fastify-jwt";
 
 const redisMock = require('fastify-redis-mock')
