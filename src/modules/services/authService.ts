@@ -32,7 +32,7 @@ export class AuthService {
     validateToken = (token) => {
         let msg = '';
         if (token == undefined || token == "") {
-            msg += 'token cannot be empty. ';
+            msg += 'Token cannot be empty. ';
         }
 
         return msg;
@@ -51,14 +51,14 @@ export class AuthService {
             });
     })
 
-    redisSet = (key, value) => new Promise((resolve, reject) => {
-        this.redis.set(key, value), "EX", this.conf.expireToken, (err, val) => {
+    redisSet = (key, data) => new Promise((resolve, reject) => {
+        this.redis.set(key, data, "EX", this.conf.expireToken, (err, val) => {
             if (err) {
-                reject(Error('Authentication failed! Failed to set redis.'));
+                reject(Error('Authentication failed! Failed to set redis.'))
             } else {
-                resolve("Authentication success!");
+                resolve("Authentication success!")
             }
-        }
+        })
     })
 
     redisVerifyGet = (key) => new Promise((resolve, reject) => {
@@ -74,7 +74,7 @@ export class AuthService {
         })
     })
 
-    login = async (param) => new Promise(async (resolve, reject) => {
+    login = (param) => new Promise(async (resolve, reject) => {
         try {
             const { username, password } = param;
             const errMessage = this.validateUsernamePassword(username, password)
@@ -87,7 +87,6 @@ export class AuthService {
             const token = this.jwt.sign({ username })
 
             await this.redisSet(username, JSON.stringify({ username, token }))
-
             resolve(token);
         } catch (error) {
             reject(error);

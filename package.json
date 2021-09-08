@@ -12,7 +12,7 @@
         "build:dev": "tsc -w",
         "start:dev": "nodemon build/index.js",
         "test": "jest --json --outputFile=src/__test__/output.json",
-        "test:dev": "npm run test --watch",
+        "test:dev": "npm run test --detectOpenHandles",
         "test:coverage": "jest --coverage",
         "build": "tsc",
         "start": "node build/index.js"

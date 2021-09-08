@@ -118,3 +118,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 .vscode
+onboarding.yml
+
+# yml config
+<!-- *.yml -->

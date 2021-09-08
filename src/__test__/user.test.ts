@@ -2,18 +2,24 @@ import * as instance from '../server';
 import SequelizeMock from 'sequelize-mock';
 import { UserService } from '../modules/services/userService';
 import { AuthService } from '../modules/services/authService';
-import fastifyJwt from "fastify-jwt";
+import fastifyJwt, { fastifyJWT } from "fastify-jwt";
 
 const redisMock = require('fastify-redis-mock')
 
-const dataInsertSuccess = {
+const mockUser = {
     username: "jestUsername",
-    password: "jestPassword",
-};
-const dataInsertFailed = {
+    password: "jestPassword"
 };
 
+const mockUpdate = {
+    username: "jestUsername",
+    oldPassword: "jestOldPassword",
+    newPassword: "jestNewPassword",
+};
+
+let result: any;
 const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Implc3RVc2VybmFtZSIsImlhdCI6MTYzMDkwMzc5OH0.ItNCbz3z2nPoNuMolINIp-I4B44Ze_bLhpRBqijiPNo";
+
 
 jest.setTimeout(12000);
 
@@ -26,60 +32,58 @@ beforeAll(async () => {
 
 const dbMock = new SequelizeMock();
 
-describe('/userModel', () => {
+describe('userService', () => {
     const userService = new UserService(dbMock, redisMock)
-    // const authService = new AuthService(dbMock, redisMock, server.jwt, process.env.EXPIRE_TOKEN)
-
-    // Spying on the actual methods of the class
-    jest.spyOn(userService, 'getAllUser');
-    jest.spyOn(userService, 'insertUser');
-    jest.spyOn(userService, 'deleteUser');
     jest.spyOn(userService, 'validateUsernamePassword');
-    // jest.spyOn(authService, 'verify');
+    jest.spyOn(userService, 'validateUpdate');
 
-    it('should insert user success', async () => {
-        const insertUser = await userService.insertUser(dataInsertSuccess)
-            .then(data => {
-                expect(JSON.stringify(data)).toContain('"username":"jestUsername"')
-            })
-        expect(userService.validateUsernamePassword).toHaveBeenCalledTimes(1);
-        expect(userService.insertUser).toHaveBeenCalledTimes(1);
+    it('test validateUsernamePassword', async () => {
+        result = await userService.validateUsernamePassword(mockUser.username, mockUser.password);
+        expect(result).toEqual("");
     });
 
-    it('should insert user failed', async () => {
-        const insertUser = await userService.insertUser(dataInsertFailed)
-            .catch(error => {
-                expect(error).toEqual(Error("Username cannot be empty. Password cannot be empty. "))
-            })
-        expect(userService.validateUsernamePassword).toHaveBeenCalledTimes(2);
-        expect(userService.insertUser).toHaveBeenCalledTimes(2);
+    it('test validateUpdate', async () => {
+        result = await userService.validateUpdate(mockUpdate.username, mockUpdate.oldPassword, mockUpdate.newPassword);
+        expect(result).toEqual("");
     });
 
-    it('should get user', async () => {
-        const getAllUser = await userService.getAllUser()
-        // .then(data => {
-        //     expect(JSON.stringify(data)).toContain('"username":"jestUsername"')
-        // });
-        expect(getAllUser).toBeTruthy()
-        expect(userService.getAllUser).toBeCalledTimes(1)
+    it('|- all message', async () => {
+        result = await userService.validateUpdate(null, null, null);
+        expect(result).toEqual("Username cannot be empty. Password cannot be empty. New Password cannot be empty. ");
+    });
+});
+
+
+describe('AuthService', () => {
+    const authService = new AuthService(dbMock, redisMock, fastifyJWT, 3600);
+    jest.spyOn(authService, 'validateUsernamePassword');
+    jest.spyOn(authService, 'validateToken');
+    jest.spyOn(authService, 'findUser');
+
+    it('test validateUsernamePassword', async () => {
+        result = await authService.validateUsernamePassword(mockUser.username, mockUser.password);
+        expect(result).toEqual("");
     });
 
-    // expect error kara gak bisa mock data user awal
-    it('should delete user', async () => {
-        const deleteUser = await userService.deleteUser(dataInsertSuccess)
-            .catch(error => {
-                expect(error).toEqual(Error("Error in delete record"))
-            })
-        expect(userService.validateUsernamePassword).toHaveBeenCalledTimes(3);
-        expect(userService.deleteUser).toBeCalledTimes(1)
+    it('|- all message', async () => {
+        result = await authService.validateUsernamePassword(null, null);
+        expect(result).toEqual("Username cannot be empty. Password cannot be empty. ");
     });
 
-    // it('should verify user', async () => {
-    //     await authService.verify(token)
-    //         // .then(data => {
-    //         //     expect(JSON.stringify(data)).toContain('"username":"jestUsername"')
-    //         // });
-    //     expect(authService.verify).toBeCalledTimes(1)
-    //     expect(authService.validateToken).toBeCalledTimes(1)
-    // });
+    it('test validateToken', async () => {
+        result = await authService.validateToken(token);
+        expect(result).toEqual("");
+    });
+
+    it('|- all message', async () => {
+        result = await authService.validateToken(null);
+        expect(result).toEqual("Token cannot be empty. ");
+    });
+
+    it('test findUser', async () => {
+        result = await authService.findUser(mockUser.username, mockUser.password);
+        const { dataValues } = result
+        expect(dataValues).toMatchObject(mockUser);
+    });
+
 });
