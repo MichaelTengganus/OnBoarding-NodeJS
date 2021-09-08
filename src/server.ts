@@ -108,7 +108,7 @@ export const createServer = () => new Promise((resolve, reject) => {
     // main
     const start = async () => {
         try {
-            await server.listen(port);
+            await server.listen(port,'0.0.0.0');
             server.blipp();
             server.log.info(`server listening on ${JSON.stringify(server.server.address())}`);
             resolve(server);

@@ -2,8 +2,8 @@ import fp from 'fastify-plugin';
 
 import { UserTO, GetUserTO, UpdateUserTO, DeleteUserTO, LoginTO, VerifyTokenTO } from './schema';
 
-import { UserService } from '../../services/user-service'
-import { AuthService } from '../../services/auth-service'
+import { UserService } from '../../services/userService'
+import { AuthService } from '../../services/authService'
 
 import { sendApmError } from '../../../util/apmCaptureErr'
 
