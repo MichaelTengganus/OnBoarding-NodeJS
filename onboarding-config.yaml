@@ -1,21 +1,16 @@
 apiVersion: v1
-kind: Secret
+kind: ConfigMap
 metadata:
   name: onboarding-config
-type: Opaque
 data:
-  PORT: MzAwMQ==
-  DB_DIALECT: bXlzcWw=
-  DB: Ym9vay1kYg==
-  DB_HOST: Ym9vay1kYi5kYXRhYmFzZS53aW5kb3dzLm5ldA==
-  DB_PORT: MTQzMw==
-  DB_USERNAME: YWRtaW5hZG1pbg==
-  DB_PASSWORD: RWNvbVBAc3N3MHJk
-  APP_SETTINGS_FILE_PATH: XGNvbmZpZ1xhcHBDb25maWcuanNvbg==
-  APM_URL: aHR0cDovLzIwLjQzLjE3MS45Njo4MjAwLw==
-  KAFKA_HOST: MjAuMTk4LjEzNi4xNzM6MjkwOTI=
-  SECRET: UEBzc3cwcmQxMjMh
-  EXPIRE_TOKEN: MzYwMA==
-  REDIS_PORT: NjM4MA==
-  REDIS_HOST: YXN0cmEtc3Rhci5yZWRpcy5jYWNoZS53aW5kb3dzLm5ldA==
-  REDIS_PASSWORD: dXBiNWVXOWR2b01XTSt5QUtBQWpJaEdzclZvRE9PUzY3Z1BVQTBNR0R2Zz0=
+  PORT: '3001'
+  DB_DIALECT: 'mysql'
+  DB: 'book-db'
+  DB_HOST: 'book-db.database.windows.net'
+  DB_PORT: '1433'
+  APP_SETTINGS_FILE_PATH: '\config\appConfig.json'
+  APM_URL: 'http://20.43.171.96:8200/'
+  KAFKA_HOST: '20.198.136.173:29092'
+  EXPIRE_TOKEN: '3600'
+  REDIS_PORT: '6380'
+  REDIS_HOST: 'astra-star.redis.cache.windows.net'

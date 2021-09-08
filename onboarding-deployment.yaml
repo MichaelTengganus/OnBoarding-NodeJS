@@ -1,19 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    name: onboarding
   name: onboarding
+  labels:
+    app: onboarding
 spec:
-  # type: LoadBalancer
   replicas: 1
   selector:
     matchLabels:
-      name: onboarding
+      app: onboarding
   template:
     metadata:
       labels:
-        name: onboarding
+        app: onboarding
     spec:
       containers:
       - image: acronboarding.azurecr.io/onboarding:latest
@@ -25,76 +24,76 @@ spec:
           value: 'true'
         - name: PORT
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: PORT
         - name: DB_DIALECT
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: DB_DIALECT
         - name: DB
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: DB
         - name: DB_HOST
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: DB_HOST
         - name: DB_PORT
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: DB_PORT
         - name: DB_USERNAME
           valueFrom:
             secretKeyRef:
-              name: onboarding-config
+              name: onboarding-secret
               key: DB_USERNAME
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: onboarding-config
+              name: onboarding-secret
               key: DB_PASSWORD
         - name: APP_SETTINGS_FILE_PATH
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: APP_SETTINGS_FILE_PATH
         - name: APM_URL
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: APM_URL
         - name: KAFKA_HOST
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: KAFKA_HOST
         - name: SECRET
           valueFrom:
             secretKeyRef:
-              name: onboarding-config
+              name: onboarding-secret
               key: SECRET
         - name: EXPIRE_TOKEN
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: EXPIRE_TOKEN
         - name: REDIS_PORT
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: REDIS_PORT
         - name: REDIS_HOST
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: onboarding-config
               key: REDIS_HOST
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: onboarding-config
+              name: onboarding-secret
               key: REDIS_PASSWORD
