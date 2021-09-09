@@ -1,4 +1,5 @@
-# Introduction 
+[![Build status](https://dev.azure.com/bonsir/On-Boarding%20Ecom/_apis/build/status/On-Boarding%20Ecom-Docker%20container-CI)](https://dev.azure.com/bonsir/On-Boarding%20Ecom/_build/latest?definitionId=-1)
+# Introduction
 OnBoarding-NodeJS a NodeJS application developed to learn Fastify.
 
 ### Prerequisites

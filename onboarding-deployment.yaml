@@ -15,7 +15,7 @@ spec:
         app: onboarding
     spec:
       containers:
-      - image: acronboarding.azurecr.io/onboarding:latest
+      - image: michaeltengganus/onboarding:latest
         name: onboarding
         ports:
         - containerPort: 3001
